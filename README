@@ -10,4 +10,7 @@ What still needs to be done
 - Enable scope specific regular expressions 
 - Enable scope specific block separators (currently uses blank lines and indentation to find blocks of code) 
 
+I'm working on this gist and will merge the code with this bundle whenever I think the new features are stable: 
+https://gist.github.com/988793
+
 /Mads
