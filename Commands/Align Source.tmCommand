@@ -147,7 +147,13 @@ end
   Great, lets get to the formatting then.
 =end
 
-regexps = [ /(,)(?!$)/, /\}/, /&lt;-/, /\s[-+\/*|]?(=)\s/, /\s(=&gt;)\s/,/:/,/\/\// ] 
+fallback_regexps = "/(,)(?!$)/ø/\}/ø/&lt;-/ø/\s[-+\/*|]?(=)\s/ø/\s(=&gt;)\s/ø/:/ø/\/\//"
+regexps = (ENV['TM_SOURCE_ALIGNMENT_PATTERN'] || fallback_regexps).
+            split('ø').
+            map do |r| 
+              md = r.match("/(.*)/(.*)")
+              Regexp.new(Regexp.escape(md[1]))
+            end
 text    = STDIN.readlines().join()
 
 if ENV['TM_SELECTED_TEXT'].nil?
