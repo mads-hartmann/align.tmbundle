@@ -5,12 +5,12 @@
 	<key>beforeRunningCommand</key>
 	<string>nop</string>
 	<key>command</key>
-	<string>#!/usr/bin/env ruby
+	<string>#!/usr/bin/env ruby -W0
 # Alignes the source 
-def align(text, regexp, width)
+def align(text, regexp_hash, width)
   text.to_a.map do |line|
-    if offset = offsetOfRegexpInLine(line, regexp)
-      if shouldInsertBefore(line, regexp)
+    if offset = offsetOfRegexpInLine(line, regexp_hash['regexp'])
+      if shouldInsertBefore(line, regexp_hash)
         before = line[0..offset-1]
         before + ' ' * (width - (before.length)) + line[offset..line.length-1]
       else
@@ -23,10 +23,11 @@ def align(text, regexp, width)
   end.join
 end
 
-# Figures out if the spacing should be added before or after the match 
-def shouldInsertBefore(line, regexp)
-  offset = offsetOfRegexpInLine(line,regexp)
-  if line.chars.to_a[offset-1] =~ /\s/ then true else false end
+# Figures out if the spacing should be added before or after the match. 
+# This is chosen by the bundle developer by using the regexp options 'a'
+# or 'b' where a is after and b is before
+def shouldInsertBefore(line, regexp_hash)
+  !(regexp_hash['spacing'] == "a")
 end
 
 # Finds the width of the line with the most text before the regexp.
@@ -60,22 +61,22 @@ def trim_all_whitespace(text)
 end
 
 # finds the minimum offset of the capture of a regexp across all lines in a text.
-def minOffsetOfRegexp(text,regexp)
-  min_offset = text.split("\n").collect { |line| offsetOfRegexpInLine(line,regexp) }.min
-  { "min_offset" =&gt; min_offset, "regexp" =&gt; regexp }
+def minOffsetOfRegexp(text,regexp_hash)
+  min_offset = text.split("\n").collect { |line| offsetOfRegexpInLine(line,regexp_hash['regexp']) }.min
+  { "min_offset" =&gt; min_offset, "regexp_hash" =&gt; regexp_hash }
 end
 
 # sorts and filters the regular expressions so the ones with the captures with the 
 # lowest offset comes first. The ones that aren't matched or doesn't need alignment 
 # are filtered out
-def prioritizeRegexps(text, regexps)
-  regexps.
-    select  { |r|     hasMatchForAll(text, r) }.
-    collect { |r|     minOffsetOfRegexp(text, r) }.
+def prioritizeRegexps(text, regexps_hash)
+  regexps_hash.
+    select  { |rh|    hasMatchForAll(text, rh['regexp']) }.
+    collect { |rh|    minOffsetOfRegexp(text, rh) }.
     select  { |d|     not d['min_offset'].nil? }.
     sort    { |d1,d2| d1['min_offset'] &lt;=&gt; d2['min_offset'] }.
     select  { |d|     d['min_offset'] &gt; 0 }.
-    collect { |d|     d['regexp'] }
+    collect { |d|     d['regexp_hash'] }
 end
 
 # Finds blocks of code to align. It uses the following heuristics:
@@ -85,7 +86,7 @@ end
 #
 # returns an array of dictionaries with the keys 'block', 'from', 'to' that 
 # expresses which lines the block spans. 
-def find_blocks(text, regexps)
+def find_blocks(text)
   lines = text.to_a
 
   initial = {
@@ -115,28 +116,28 @@ def find_blocks(text, regexps)
 end
 
 # Formats a single block. 
-def format_block(block_dict, regexps)
+def format_block(block_dict, regexps_hash)
   text = trim_all_whitespace(block_dict['lines'].join)
-  prioritizeRegexps(text, regexps).each do |regexp| 
-    text = align(text, regexp, width(text, regexp))
+  prioritizeRegexps(text, regexps_hash).each do |regexp_hash| 
+    text = align(text, regexp_hash, width(text, regexp_hash['regexp']))
   end
   text 
 end
 
 # Formats every block in the text 
-def format_all(text, regexps)
+def format_all(text, regexps_hash)
   text = trim_all_whitespace(text)
-  find_blocks(text, regexps).
-    map  { |block| format_block(block, regexps) }.
+  find_blocks(text).
+    map  { |block| format_block(block, regexps_hash) }.
     each { |txt|   print txt }
 end
 
 # Formats the source in the block that goins the given line. All other blocks
 # are just printet w/o formatting. 
-def format_block_containing_line(text, line_number, regexps)
-  find_blocks(text, regexps).each do |block_dict|
+def format_block_containing_line(text, line_number, regexps_hash)
+  find_blocks(text).each do |block_dict|
     if block_dict['from'] &lt;= line_number &amp;&amp; block_dict['to'] &gt;= line_number
-      print format_block(block_dict, regexps)
+      print format_block(block_dict, regexps_hash)
     else
       print block_dict['lines'].join
     end
@@ -146,20 +147,21 @@ end
 =begin
   Great, lets get to the formatting then.
 =end
+fallback_regexps = ["/(,)(?!$)/","/\}/","/&lt;-/","/\s[-+\/*|]?(=)\s/","/\s(=&gt;)\s/","/:/","/\/\//"].join('ø')
 
-fallback_regexps = "/(,)(?!$)/ø/\}/ø/&lt;-/ø/\s[-+\/*|]?(=)\s/ø/\s(=&gt;)\s/ø/:/ø/\/\//"
-regexps = (ENV['TM_SOURCE_ALIGNMENT_PATTERN'] || fallback_regexps).
+regexps_hash = (ENV['TM_SOURCE_ALIGNMENT_PATTERN'] || fallback_regexps).
             split('ø').
             map do |r| 
               md = r.match("/(.*)/(.*)")
-              Regexp.new(Regexp.escape(md[1]))
+              { "regexp"  =&gt; Regexp.new(md[1]),
+                "spacing" =&gt; md[2] }
             end
 text    = STDIN.readlines().join()
 
 if ENV['TM_SELECTED_TEXT'].nil?
-  format_block_containing_line(text, ENV['TM_LINE_NUMBER'].to_i - 1, regexps)
+  format_block_containing_line(text, ENV['TM_LINE_NUMBER'].to_i - 1, regexps_hash)
 else
-  format_all(text, regexps)
+  format_all(text, regexps_hash)
 end</string>
 	<key>fallbackInput</key>
 	<string>scope</string>
