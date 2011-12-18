@@ -2,8 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>contactEmailRot13</key>
+	<string>znqf379@tznvy.pbz</string>
+	<key>contactName</key>
+	<string>Mads Hartmann Jensen</string>
+	<key>description</key>
+	<string></string>
 	<key>name</key>
-	<string>align</string>
+	<string>Align</string>
 	<key>ordering</key>
 	<array>
 		<string>08636A01-94A8-4050-8A31-343E5BD187CF</string>
