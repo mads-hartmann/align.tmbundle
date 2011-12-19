@@ -6,10 +6,12 @@
 	<string>nop</string>
 	<key>command</key>
 	<string>#!/usr/bin/env ruby -W0
-# Alignes the source 
+# Alignes the source
 def align(text, regexp_hash, width)
   text.to_a.map do |line|
-    if offset = offsetOfRegexpInLine(line, regexp_hash['regexp'])
+    if is_all_whitespace(line)
+      line
+    elsif offset = offsetOfRegexpInLine(line, regexp_hash['regexp'])
       if shouldInsertBefore(line, regexp_hash)
         before = line[0..offset-1]
         before + ' ' * (width - (before.length)) + line[offset..line.length-1]
@@ -17,13 +19,13 @@ def align(text, regexp_hash, width)
         before = line[0..offset]
         before + ' ' * (width - (before.length-1)) + line[offset+1..line.length-1]
       end
-    else 
+    else
       line
     end
   end.join
 end
 
-# Figures out if the spacing should be added before or after the match. 
+# Figures out if the spacing should be added before or after the match.
 # This is chosen by the bundle developer by using the regexp options 'a'
 # or 'b' where a is after and b is before
 def shouldInsertBefore(line, regexp_hash)
@@ -36,17 +38,17 @@ def width(text, regexp)
 end
 
 # The offset of a regexp in a line of text. -1 if it doesn't match
-def offsetOfRegexpInLine(line, regexp) 
-  if match = regexp.match(line) 
-    match.offset(match.size &gt; 1 ? 1 : 0)[0] 
-  else 
-    -1 
+def offsetOfRegexpInLine(line, regexp)
+  if match = regexp.match(line)
+    match.offset(match.size &gt; 1 ? 1 : 0)[0]
+  else
+    -1
   end
 end
 
-# Checks that the regexp matches every line 
+# Checks that the regexp matches every line
 def hasMatchForAll(text, regexp)
-  text.to_a.select { |x| not x =~ /^\s*$/}.all? { |line| line =~ regexp }
+  text.to_a.all?{ |line| line =~ regexp }
 end
 
 def left_spacing(line)
@@ -54,10 +56,18 @@ def left_spacing(line)
 end
 
 # squeeces all whitspace in the line (preserves the left spacing)
-def trim_all_whitespace(text) 
-  text.to_a.map do |line| 
+def trim_all_whitespace(text)
+  text.to_a.map do |line|
     left_spacing(line) + line.squeeze(" ").squeeze("	").lstrip #the 2. is a tab
   end.join
+end
+
+def is_all_whitespace(line)
+  if /^\s*$/.match(line)
+    true
+  else
+    false
+  end
 end
 
 # finds the minimum offset of the capture of a regexp across all lines in a text.
@@ -66,13 +76,14 @@ def minOffsetOfRegexp(text,regexp_hash)
   { "min_offset" =&gt; min_offset, "regexp_hash" =&gt; regexp_hash }
 end
 
-# sorts and filters the regular expressions so the ones with the captures with the 
-# lowest offset comes first. The ones that aren't matched or doesn't need alignment 
+# sorts and filters the regular expressions so the ones with the captures with the
+# lowest offset comes first. The ones that aren't matched or doesn't need alignment
 # are filtered out
 def prioritizeRegexps(text, regexps_hash)
+  no_blank_lines = text.to_a.select { |line| not is_all_whitespace(line) }.join
   regexps_hash.
-    select  { |rh|    hasMatchForAll(text, rh['regexp']) }.
-    collect { |rh|    minOffsetOfRegexp(text, rh) }.
+    select  { |rh|    hasMatchForAll(no_blank_lines, rh['regexp']) }.
+    collect { |rh|    minOffsetOfRegexp(no_blank_lines, rh) }.
     select  { |d|     not d['min_offset'].nil? }.
     sort    { |d1,d2| d1['min_offset'] &lt;=&gt; d2['min_offset'] }.
     select  { |d|     d['min_offset'] &gt; 0 }.
@@ -82,10 +93,9 @@ end
 # Finds blocks of code to align. It uses the following heuristics:
 #
 #   - A line belongs to the previous block if it has the same indentation
-#   - A blank line ends a block 
 #
-# returns an array of dictionaries with the keys 'block', 'from', 'to' that 
-# expresses which lines the block spans. 
+# returns an array of dictionaries with the keys 'block', 'from', 'to' that
+# expresses which lines the block spans.
 def find_blocks(text)
   lines = text.to_a
 
@@ -100,7 +110,12 @@ def find_blocks(text)
 
   text.to_a.reduce(initial) do |reduced, line|
     blocks = reduced['blocks']
-    if left_spacing(line) == left_spacing(reduced['prev']) 
+
+    if is_all_whitespace(line)
+      blocks[blocks.size-1]['lines'] &lt;&lt; line
+      blocks[blocks.size-1]['to']  = blocks[blocks.size-1]['to'] + 1
+      { 'prev' =&gt; reduced['prev'], 'blocks' =&gt; blocks}
+    elsif left_spacing(line) == left_spacing(reduced['prev'])
       blocks[blocks.size-1]['lines'] &lt;&lt; line
       blocks[blocks.size-1]['to']  = blocks[blocks.size-1]['to'] + 1
       { 'prev' =&gt; line, 'blocks' =&gt; blocks}
@@ -115,16 +130,16 @@ def find_blocks(text)
   end['blocks']
 end
 
-# Formats a single block. 
+# Formats a single block.
 def format_block(block_dict, regexps_hash)
   text = trim_all_whitespace(block_dict['lines'].join)
-  prioritizeRegexps(text, regexps_hash).each do |regexp_hash| 
+  prioritizeRegexps(text, regexps_hash).each do |regexp_hash|
     text = align(text, regexp_hash, width(text, regexp_hash['regexp']))
   end
-  text 
+  text
 end
 
-# Formats every block in the text 
+# Formats every block in the text
 def format_all(text, regexps_hash)
   text = trim_all_whitespace(text)
   find_blocks(text).
@@ -133,7 +148,7 @@ def format_all(text, regexps_hash)
 end
 
 # Formats the source in the block that goins the given line. All other blocks
-# are just printet w/o formatting. 
+# are just printet w/o formatting.
 def format_block_containing_line(text, line_number, regexps_hash)
   find_blocks(text).each do |block_dict|
     if block_dict['from'] &lt;= line_number &amp;&amp; block_dict['to'] &gt;= line_number
@@ -151,7 +166,7 @@ fallback_regexps = ["/(,)(?!$)/","/\}/","/&lt;-/","/\s[-+\/*|]?(=)\s/","/\s(=&gt
 
 regexps_hash = (ENV['TM_SOURCE_ALIGNMENT_PATTERN'] || fallback_regexps).
             split('ø').
-            map do |r| 
+            map do |r|
               md = r.match("/(.*)/(.*)")
               { "regexp"  =&gt; Regexp.new(md[1]),
                 "spacing" =&gt; md[2] }
@@ -167,13 +182,21 @@ end</string>
 	<string>scope</string>
 	<key>input</key>
 	<string>selection</string>
+	<key>inputFormat</key>
+	<string>text</string>
 	<key>keyEquivalent</key>
 	<string>^@9</string>
 	<key>name</key>
 	<string>Align Source</string>
-	<key>output</key>
-	<string>replaceSelectedText</string>
+	<key>outputCaret</key>
+	<string>heuristic</string>
+	<key>outputFormat</key>
+	<string>text</string>
+	<key>outputLocation</key>
+	<string>replaceInput</string>
 	<key>uuid</key>
 	<string>08636A01-94A8-4050-8A31-343E5BD187CF</string>
+	<key>version</key>
+	<integer>2</integer>
 </dict>
 </plist>
