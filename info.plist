@@ -7,7 +7,9 @@
 	<key>contactName</key>
 	<string>Mads Hartmann Jensen</string>
 	<key>description</key>
-	<string></string>
+	<string>This is a greatly improved alignment command. Rather than just aligning assignments it will align all sorts of things.
+
+It lives at https://github.com/mads379/align.tmbundle</string>
 	<key>name</key>
 	<string>Align</string>
 	<key>ordering</key>
