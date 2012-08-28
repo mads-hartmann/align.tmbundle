@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>name</key>
-	<string>Alignment Patterns (CSS)</string>
+	<string>Alignment Patterns (Ruby)</string>
 	<key>scope</key>
-	<string>source.css</string>
+	<string>source.ruby</string>
 	<key>settings</key>
 	<dict>
 		<key>shellVariables</key>
@@ -14,11 +14,11 @@
 				<key>name</key>
 				<string>TM_SOURCE_ALIGNMENT_PATTERN</string>
 				<key>value</key>
-				<string>/:/a</string>
+				<string>/=&gt;/bø/:/a</string>
 			</dict>
 		</array>
 	</dict>
 	<key>uuid</key>
-	<string>F89CFEE9-F073-4B9C-9E8C-06319EC51EBE</string>
+	<string>014C8ED7-9501-4479-B890-4A15125FF379</string>
 </dict>
 </plist>
