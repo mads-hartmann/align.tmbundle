@@ -19,14 +19,17 @@ choose settings. Set the scope you want, fx `source.ruby` and add something like
 the following.
 
     { shellVariables = (
-      {
-        name = 'TM_SOURCE_ALIGNMENT_PATTERN';
-        value = '[
-        {
+        { name = 'TM_SOURCE_ALIGNMENT_PATTERN';
+          value = '[
+          { 
+            "regexp" : "=>", 
+            "spacing" : "before"
+          },
+          { 
             "regexp" : ":", 
             "spacing" : "after"
-        }]';
-      },
+          }]';
+        },
       );
     }
 
