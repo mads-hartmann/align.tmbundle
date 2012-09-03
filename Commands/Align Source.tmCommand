@@ -6,6 +6,10 @@
 	<string>nop</string>
 	<key>command</key>
 	<string>#!/usr/bin/env ruby -W0
+
+require 'rubygems'
+require 'json'
+
 # Alignes the source
 def align(text, regexp_hash, width)
   text.to_a.map do |line|
@@ -29,7 +33,7 @@ end
 # This is chosen by the bundle developer by using the regexp options 'a'
 # or 'b' where a is after and b is before
 def shouldInsertBefore(line, regexp_hash)
-  !(regexp_hash['spacing'] == "a")
+  !(regexp_hash['spacing'] == "after")
 end
 
 # Finds the width of the line with the most text before the regexp.
@@ -162,16 +166,30 @@ end
 =begin
   Great, lets get to the formatting then.
 =end
-fallback_regexps = ["/(,)(?!$)/","/\}/","/&lt;-/","/\s[-+\/*|]?(=)\s/","/\s(=&gt;)\s/","/:/","/\/\//"].join('ø')
 
-regexps_hash = (ENV['TM_SOURCE_ALIGNMENT_PATTERN'] || fallback_regexps).
-            split('ø').
-            map do |r|
-              md = r.match("/(.*)/(.*)")
-              { "regexp"  =&gt; Regexp.new(md[1]),
-                "spacing" =&gt; md[2] }
-            end
-text    = STDIN.readlines().join()
+fallback = [
+  { "regexp" =&gt; "(,)(?!$)", "spacing" =&gt; "" },
+  { "regexp" =&gt; "\}", "spacing" =&gt; "" },
+  { "regexp" =&gt; "&lt;-", "spacing" =&gt; "" },
+  { "regexp" =&gt; "\s[-+\/*|]?(=)\s", "spacing" =&gt; "" },
+  { "regexp" =&gt; "\s(=&gt;)\s", "spacing" =&gt; "" },
+  { "regexp" =&gt; ":", "spacing" =&gt; "" },
+  { "regexp" =&gt; "\/\/" , "spacing" =&gt; ""}
+]
+
+regexps_hash = ENV['TM_SOURCE_ALIGNMENT_PATTERN']
+
+if regexps_hash.nil?
+  regexps_hash = fallback
+else
+  regexps_hash = JSON.parse(regexps_hash)
+end
+
+regexps_hash.each do |kv|
+  kv["regexp"] = Regexp.new(kv["regexp"])
+end
+
+text = STDIN.readlines().join()
 
 if ENV['TM_SELECTED_TEXT'].nil?
   format_block_containing_line(text, ENV['TM_LINE_NUMBER'].to_i - 1, regexps_hash)

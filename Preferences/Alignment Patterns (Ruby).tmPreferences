@@ -14,7 +14,15 @@
 				<key>name</key>
 				<string>TM_SOURCE_ALIGNMENT_PATTERN</string>
 				<key>value</key>
-				<string>/=&gt;/bø/:/a</string>
+				<string>[
+      { 
+        "regexp" : "=&gt;", 
+        "spacing" : "before"
+      },
+      { 
+        "regexp" : ":", 
+        "spacing" : "after"
+      }]</string>
 			</dict>
 		</array>
 	</dict>

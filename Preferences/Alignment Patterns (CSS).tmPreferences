@@ -14,7 +14,11 @@
 				<key>name</key>
 				<string>TM_SOURCE_ALIGNMENT_PATTERN</string>
 				<key>value</key>
-				<string>/:/a</string>
+				<string>[
+      { 
+        "regexp" : ":", 
+        "spacing" : "after"
+      }]</string>
 			</dict>
 		</array>
 	</dict>

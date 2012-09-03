@@ -4,10 +4,11 @@ This is a greatly improved alignment command. Rather than just aligning
 assignments it will align all sorts of things.
 
 This is a work in progress and I've published this bundle so people can give it
-a try. In the long term this will get merged into TextMate.
+a try. In the long term I hope this will get merged into TextMate.
 
 ## Installation
 
+    gem install json
     cd ~/Library/Application\ Support/Avian/Bundles
     git clone https://github.com/mads379/align.tmbundle.git
 
@@ -17,16 +18,22 @@ Open the bundle editor (ctrl+alt+cmd+b). Find the Align bundle. Hit `cmd+n` and
 choose settings. Set the scope you want, fx `source.ruby` and add something like
 the following.
 
-    {	shellVariables = (
-    		{	name = 'TM_SOURCE_ALIGNMENT_PATTERN';
-    			value = '/=>/bø/:/a';
-    		},
-    	);
+    { shellVariables = (
+      {
+        name = 'TM_SOURCE_ALIGNMENT_PATTERN';
+        value = '[
+        {
+            "regexp" : ":", 
+            "spacing" : "after"
+        }]';
+      },
+      );
     }
 
-Here `ø` is used a separator (if you have a better symbol please share it with me).
-The syntax is `/regexp/[a|b]` where `a` and `b` specifies if it should inject
-spaces **b**efore or **a**fter the thing `regexp` matched.
+The `value` is a simply a JSON array with objects that has a `regexp` and `spacing`
+property. The `regexp` is the regular expression to match after and spacing can be
+either `before` or `after` depending on weather you want in insert the spaces before
+or after the matched text.
 
 ## Missing features
 

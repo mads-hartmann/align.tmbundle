@@ -4,6 +4,7 @@
   :much_longer => 'baz'
 }
 
+
 # should become:
 {
   :short       => 'bar',
