@@ -8,7 +8,6 @@ a try. In the long term I hope this will get merged into TextMate.
 
 ## Installation
 
-    gem install json
     cd ~/Library/Application\ Support/Avian/Bundles
     git clone https://github.com/mads379/align.tmbundle.git
 
