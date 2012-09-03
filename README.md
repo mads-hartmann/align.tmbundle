@@ -15,8 +15,10 @@ a try. In the long term I hope this will get merged into TextMate.
 ## How to add alignment rules
 
 Open the bundle editor (ctrl+alt+cmd+b). Find the Align bundle. Hit `cmd+n` and
-choose settings. Set the scope you want, fx `source.ruby` and add something like
-the following.
+choose settings. 
+
+In the new setting item, first set its name (something like `Alignment Patterns (yourLanguage)` and scope (e.g `source.yourLanguage`). Then add something like
+the following as content for the setting:
 
     { shellVariables = (
         { name = 'TM_SOURCE_ALIGNMENT_PATTERN';
@@ -33,10 +35,16 @@ the following.
       );
     }
 
-The `value` is a simply a JSON array with objects that has a `regexp` and `spacing`
-property. The `regexp` is the regular expression to match after and spacing can be
-either `before` or `after` depending on weather you want in insert the spaces before
-or after the matched text.
+`value` is a JSON array containing a list of `regexp` and `spacing` properties. 
+
+`regexp` is a regular expression which will capture your alignment string. It could be as simple as "=".
+
+`spacing` can be set to `before` or `after` depending on whether you to insert the padding spaces
+before or after the alignment string.
+
+### Advanced
+You might want a more complex regular expression to capture the alignment string. For instance to capture any of `=`,`+=`, `-=`, `*=`, `/=`, the following would work:
+> `\s[+-*\/]?=\s`
 
 ## Missing features
 
@@ -45,5 +53,5 @@ or after the matched text.
 
 ## History
 
-- Original discussion: http://old.nabble.com/Align-Source-td31636561.html
-- Original proof of concept: https://gist.github.com/988793
+- Original discussion: [http://old.nabble.com/Align-Source-td31636561.html](http://old.nabble.com/Align-Source-td31636561.html)
+- Original proof of concept: [https://gist.github.com/988793](https://gist.github.com/988793)
