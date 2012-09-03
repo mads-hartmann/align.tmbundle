@@ -14,7 +14,35 @@
 				<key>name</key>
 				<string>TM_SOURCE_ALIGNMENT_PATTERN</string>
 				<key>value</key>
-				<string>/(,)(?!$)/ø/\}/ø/&lt;-/ø/\s[-+\/*|]?(=)\s/ø/\s(=&gt;)\s/ø/:/ø/\/\//</string>
+				<string>[
+      { 
+        "regexp" : "(,)(?!$)", 
+        "spacing" : ""
+      },
+      { 
+        "regexp" : "\}", 
+        "spacing" : ""
+      },
+      { 
+        "regexp" : "&lt;-", 
+        "spacing" : ""
+      },
+      { 
+        "regexp" : "\s[-+\/*|]?(=)\s", 
+        "spacing" : ""
+      },
+      { 
+        "regexp" : "\s(=&gt;)\s", 
+        "spacing" : ""
+      },
+      { 
+        "regexp" : ":", 
+        "spacing" : ""
+      },
+      { 
+        "regexp" : "\/\/", 
+        "spacing" : ""
+      }]</string>
 			</dict>
 		</array>
 	</dict>
