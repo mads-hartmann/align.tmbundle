@@ -17,7 +17,7 @@
 				<string>[
       { 
         "regexp" : ":", 
-        "spacing" : "after"
+        "padding" : "after"
       }]</string>
 			</dict>
 		</array>

@@ -42,8 +42,10 @@ the following as content for the setting:
 before or after the alignment string.
 
 ### Advanced
+
 You might want a more complex regular expression to capture the alignment string. For instance to capture any of `=`,`+=`, `-=`, `*=`, `/=`, the following would work:
-> `\s[+-*\/]?=\s`
+
+    `\s[+-*\/]?=\s`
 
 ## Missing features
 

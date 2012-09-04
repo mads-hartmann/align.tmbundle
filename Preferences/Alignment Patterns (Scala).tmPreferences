@@ -17,27 +17,27 @@
 				<string>[
       { 
         "regexp" : "(,)(?!$)", 
-        "spacing" : ""
+        "padding" : ""
       },
       { 
         "regexp" : "\}", 
-        "spacing" : ""
+        "padding" : ""
       },
       { 
         "regexp" : "&lt;-", 
-        "spacing" : ""
+        "padding" : ""
       },
       { 
         "regexp" : "[-+\/*|]*=", 
-        "spacing" : "before"
+        "padding" : "before"
       },
       { 
         "regexp" : ":", 
-        "spacing" : ""
+        "padding" : ""
       },
       { 
         "regexp" : "\/\/", 
-        "spacing" : ""
+        "padding" : ""
       }]</string>
 			</dict>
 		</array>

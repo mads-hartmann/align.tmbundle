@@ -32,7 +32,7 @@ end
 # This is chosen by the bundle developer by using the regexp options 'a'
 # or 'b' where a is after and b is before
 def shouldInsertBefore(line, regexp_hash)
-  !(regexp_hash['spacing'] == "after")
+  !(regexp_hash['padding'] == "after")
 end
 
 # Finds the width of the line with the most text before the regexp.
@@ -167,13 +167,13 @@ end
 =end
 
 fallback = [
-  { "regexp" =&gt; "(,)(?!$)", "spacing" =&gt; "" },
-  { "regexp" =&gt; "\}", "spacing" =&gt; "" },
-  { "regexp" =&gt; "&lt;-", "spacing" =&gt; "" },
-  { "regexp" =&gt; "\s[-+\/*|]?(=)\s", "spacing" =&gt; "" },
-  { "regexp" =&gt; "\s(=&gt;)\s", "spacing" =&gt; "" },
-  { "regexp" =&gt; ":", "spacing" =&gt; "" },
-  { "regexp" =&gt; "\/\/" , "spacing" =&gt; ""}
+  { "regexp" =&gt; "(,)(?!$)", "padding" =&gt; "" },
+  { "regexp" =&gt; "\}", "padding" =&gt; "" },
+  { "regexp" =&gt; "&lt;-", "padding" =&gt; "" },
+  { "regexp" =&gt; "\s[-+\/*|]?(=)\s", "padding" =&gt; "" },
+  { "regexp" =&gt; "\s(=&gt;)\s", "padding" =&gt; "" },
+  { "regexp" =&gt; ":", "padding" =&gt; "" },
+  { "regexp" =&gt; "\/\/" , "padding" =&gt; ""}
 ]
 
 regexps_hash = ENV['TM_SOURCE_ALIGNMENT_PATTERN']

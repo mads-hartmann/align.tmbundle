@@ -18,22 +18,22 @@
       { 
         "comment" : "align on assignments",
         "regexp" : "=|&lt;-|-&gt;",
-        "spacing" : "before"
+        "padding" : "before"
       },
       { 
         "comment" : "align right-hand side formulae assignments",
         "regexp" : "~",
-        "spacing" : "before"
+        "padding" : "before"
       },
       { 
         "comment" : "align amy stacked asignments on a line",
         "regexp" : ";",
-        "spacing" : "before"
+        "padding" : "before"
       },
       {
         "comment" : "align any comments",
         "regexp" : "#", 
-        "spacing" : "before"
+        "padding" : "before"
       }]</string>
 			</dict>
 		</array>
