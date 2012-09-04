@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>name</key>
+	<string>Alignment Patterns (R)</string>
+	<key>scope</key>
+	<string>source.r</string>
+	<key>settings</key>
+	<dict>
+		<key>shellVariables</key>
+		<array>
+			<dict>
+				<key>name</key>
+				<string>TM_SOURCE_ALIGNMENT_PATTERN</string>
+				<key>value</key>
+				<string>[
+      { 
+        "comment" : "align on assignments",
+        "regexp" : "=|&lt;-|-&gt;",
+        "spacing" : "before"
+      },
+      { 
+        "comment" : "align right-hand side formulae assignments",
+        "regexp" : "~",
+        "spacing" : "before"
+      },
+      { 
+        "comment" : "align amy stacked asignments on a line",
+        "regexp" : ";",
+        "spacing" : "before"
+      },
+      {
+        "comment" : "align any comments",
+        "regexp" : "#", 
+        "spacing" : "before"
+      }]</string>
+			</dict>
+		</array>
+	</dict>
+	<key>uuid</key>
+	<string>B020B97F-EC78-4EC1-AFF3-01CF528980CD</string>
+</dict>
+</plist>
