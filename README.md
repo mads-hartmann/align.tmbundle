@@ -23,23 +23,24 @@ the following as content for the setting:
         { name = 'TM_SOURCE_ALIGNMENT_PATTERN';
           value = '[
           { 
-            "regexp" : "=>", 
-            "spacing" : "before"
+            "regexp" : "=", 
+            "padding" : "before"
           },
           { 
             "regexp" : ":", 
-            "spacing" : "after"
+            "padding" : "after"
           }]';
         },
       );
     }
 
-`value` is a JSON array containing a list of `regexp` and `spacing` properties. 
+`value` is a JSON array containing a list of `regexp` and `padding` properties. 
+
+This example contains two alignment targets: `=` and `:`
 
 `regexp` is a regular expression which will capture your alignment string. It could be as simple as "=".
 
-`spacing` can be set to `before` or `after` depending on whether you to insert the padding spaces
-before or after the alignment string.
+`padding` can be set to `before` or `after` depending on whether you to insert the padding spaces before or after the alignment string.
 
 ### Advanced
 
