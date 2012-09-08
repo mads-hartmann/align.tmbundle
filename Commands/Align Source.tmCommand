@@ -9,18 +9,26 @@
 
 require 'yaml'
 
+MINIMUM_SPACING_BEFORE = "minimum_spacing_before"
+MINIMUM_SPACING_AFTER  = "minimum_spacing_after"
+PADDING                = "padding"
+REGEXP                 = "regexp"
+
 # Alignes the source
-def align(text, regexp_hash, width)
+def align(text, regexp_hash, max_offset)
   text.to_a.map do |line|
     if is_all_whitespace(line)
       line
-    elsif offset = offsetOfRegexpInLine(line, regexp_hash['regexp'])
+    elsif !regexp_hash[REGEXP].match(line).nil?
+      
+      before, symbol, after = split(line, regexp_hash)
+      number_of_spaces      = (max_offset - before.length)
+      spacing               = ' ' * number_of_spaces
+
       if shouldInsertBefore(line, regexp_hash)
-        before = line[0..offset-1]
-        before + ' ' * (width - (before.length)) + line[offset..line.length-1]
+        before + spacing + symbol + after
       else
-        before = line[0..offset]
-        before + ' ' * (width - (before.length-1)) + line[offset+1..line.length-1]
+        before + symbol + spacing + after
       end
     else
       line
@@ -28,11 +36,32 @@ def align(text, regexp_hash, width)
   end.join
 end
 
+def add_minimum_spacing(text, regexp_hash)
+  text.to_a.map do |line|
+    before, symbol, after = split(line, regexp_hash)
+    txt = before
+    if right_spacing(before).length &lt; regexp_hash[MINIMUM_SPACING_BEFORE].length
+      txt += regexp_hash[MINIMUM_SPACING_BEFORE] 
+    end
+    txt += symbol
+    if left_spacing(after).length &lt; regexp_hash[MINIMUM_SPACING_AFTER].length
+      txt += regexp_hash[MINIMUM_SPACING_AFTER]
+    end
+    txt += after
+  end.join
+end
+
+def split(line, regexp_hash)
+  offset, ending   = regexp_hash[REGEXP].match(line).offset(0)
+  before           = line[0...offset]
+  symbol           = line[offset...ending]
+  after            = line[ending...line.size]
+  [before, symbol, after]
+end
+
 # Figures out if the spacing should be added before or after the match.
-# This is chosen by the bundle developer by using the regexp options 'a'
-# or 'b' where a is after and b is before
 def shouldInsertBefore(line, regexp_hash)
-  !(regexp_hash['padding'] == "after")
+  !(regexp_hash[PADDING] == "after")
 end
 
 # Finds the width of the line with the most text before the regexp.
@@ -42,7 +71,8 @@ end
 
 # The offset of a regexp in a line of text. -1 if it doesn't match
 def offsetOfRegexpInLine(line, regexp)
-  if match = regexp.match(line)
+  match = regexp.match(line)
+  if !match.nil?
     match.offset(match.size &gt; 1 ? 1 : 0)[0]
   else
     -1
@@ -56,6 +86,10 @@ end
 
 def left_spacing(line)
   line.chars.take_while { |char| char =~ /\s/ }.join
+end
+
+def right_spacing(line)
+  left_spacing(line.reverse)
 end
 
 # squeeces all whitspace in the line (preserves the left spacing)
@@ -137,7 +171,8 @@ end
 def format_block(block_dict, regexps_hash)
   text = trim_all_whitespace(block_dict['lines'].join)
   prioritizeRegexps(text, regexps_hash).each do |regexp_hash|
-    text = align(text, regexp_hash, width(text, regexp_hash['regexp']))
+    text = add_minimum_spacing(text, regexp_hash)
+    text = align(text, regexp_hash, width(text, regexp_hash[REGEXP]))
   end
   text
 end
@@ -166,26 +201,15 @@ end
   Great, lets get to the formatting then.
 =end
 
-fallback = [
-  { "regexp" =&gt; "(,)(?!$)", "padding" =&gt; "" },
-  { "regexp" =&gt; "\}", "padding" =&gt; "" },
-  { "regexp" =&gt; "&lt;-", "padding" =&gt; "" },
-  { "regexp" =&gt; "\s[-+\/*|]?(=)\s", "padding" =&gt; "" },
-  { "regexp" =&gt; "\s(=&gt;)\s", "padding" =&gt; "" },
-  { "regexp" =&gt; ":", "padding" =&gt; "" },
-  { "regexp" =&gt; "\/\/" , "padding" =&gt; ""}
-]
-
 regexps_hash = ENV['TM_SOURCE_ALIGNMENT_PATTERN']
+regexps_hash = YAML::load(regexps_hash)
 
-if regexps_hash.nil?
-  regexps_hash = fallback
-else
-  regexps_hash = YAML::load(regexps_hash)
-end
-
+# Inject defaults and load regexp
 regexps_hash.each do |kv|
-  kv["regexp"] = Regexp.new(kv["regexp"])
+  kv[REGEXP] = Regexp.new(kv[REGEXP])
+  if kv[MINIMUM_SPACING_AFTER].nil? then kv[MINIMUM_SPACING_AFTER] = "" end
+  if kv[MINIMUM_SPACING_BEFORE].nil? then kv[MINIMUM_SPACING_BEFORE] = "" end
+  if kv[PADDING].nil? then kv[PADDING] = "before" end
 end
 
 text = STDIN.readlines().join()
