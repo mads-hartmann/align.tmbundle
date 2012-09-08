@@ -18,6 +18,8 @@
       { 
         "comment" : "align on assignments",
         "regexp" : "=|&lt;-|-&gt;",
+        "minimum_spacing_before" : " ", 
+        "minimum_spacing_after" : " ",
         "padding" : "before"
       },
       { 

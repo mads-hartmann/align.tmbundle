@@ -24,11 +24,11 @@ the following as content for the setting:
           value = '[
           { 
             "regexp" : "=>", 
-            "spacing" : "before"
+            "padding" : "before"
           },
           { 
             "regexp" : ":", 
-            "spacing" : "after"
+            "padding" : "after"
           }]';
         },
       );
@@ -38,8 +38,11 @@ the following as content for the setting:
 
 `regexp` is a regular expression which will capture your alignment string. It could be as simple as "=".
 
-`spacing` can be set to `before` or `after` depending on whether you to insert the padding spaces
+`padding` can be set to `before` or `after` depending on whether you to insert the padding spaces
 before or after the alignment string.
+
+`minimum_spacing_before` and `minimum_spacing_after` can be set to define the minimum spacing there 
+should be before/after the matched symbol.
 
 ### Advanced
 
