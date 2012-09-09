@@ -25,16 +25,22 @@
       { 
         "comment" : "align right-hand side formulae assignments",
         "regexp" : "~",
+        "minimum_spacing_before" : " ", 
+        "minimum_spacing_after" : " ",
         "padding" : "before"
       },
       { 
         "comment" : "align amy stacked asignments on a line",
         "regexp" : ";",
+        "minimum_spacing_before" : "", 
+        "minimum_spacing_after" : " ",
         "padding" : "before"
       },
       {
         "comment" : "align any comments",
         "regexp" : "#", 
+        "minimum_spacing_before" : " ", 
+        "minimum_spacing_after" : " ",
         "padding" : "before"
       }]</string>
 			</dict>
