@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>name</key>
-	<string>Alignment Patterns (R)</string>
+	<string>Alignment Patterns (Objective C)</string>
 	<key>scope</key>
-	<string>source.r</string>
+	<string>source.c</string>
 	<key>settings</key>
 	<dict>
 		<key>shellVariables</key>
@@ -17,14 +17,14 @@
 				<string>[
       { 
         "comment" : "align on assignments",
-        "regexp" : "=|&lt;-|-&gt;",
+        "regexp" : "=",
         "minimum_spacing_before" : " ", 
         "minimum_spacing_after" : " ",
         "padding" : "before"
       },
       { 
-        "comment" : "align right-hand side formulae assignments",
-        "regexp" : "~",
+        "comment" : "method",
+        "regexp" : ":",
         "minimum_spacing_before" : " ", 
         "minimum_spacing_after" : " ",
         "padding" : "before"
@@ -47,6 +47,6 @@
 		</array>
 	</dict>
 	<key>uuid</key>
-	<string>B020B97F-EC78-4EC1-AFF3-01CF528980CD</string>
+	<string>F1170F79-D3BD-4E65-9392-72AD0815A532</string>
 </dict>
 </plist>
