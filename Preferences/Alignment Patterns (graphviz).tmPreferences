@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>name</key>
-	<string>Alignment Patterns (R)</string>
+	<string>Alignment Patterns (graphviz)</string>
 	<key>scope</key>
-	<string>source.r</string>
+	<string>source.dot</string>
 	<key>settings</key>
 	<dict>
 		<key>shellVariables</key>
@@ -16,22 +16,22 @@
 				<key>value</key>
 				<string>[
       { 
-        "comment" : "align on assignments",
-        "regexp" : "=|&lt;-|-&gt;",
+        "comment" : "align on [",
+        "regexp" : "\[",
         "minimum_spacing_before" : " ", 
         "minimum_spacing_after" : " ",
         "padding" : "before"
       },
       { 
-        "comment" : "align right-hand side formulae assignments",
-        "regexp" : "~",
+        "comment" : "align arrows",
+        "regexp" : "-&gt;",
         "minimum_spacing_before" : " ", 
         "minimum_spacing_after" : " ",
         "padding" : "before"
       },
       { 
-        "comment" : "align any stacked assignments on a line",
-        "regexp" : ";",
+        "comment" : "align amy asignments",
+        "regexp" : "=",
         "minimum_spacing_before" : "", 
         "minimum_spacing_after" : " ",
         "padding" : "before"
@@ -47,6 +47,6 @@
 		</array>
 	</dict>
 	<key>uuid</key>
-	<string>B020B97F-EC78-4EC1-AFF3-01CF528980CD</string>
+	<string>7912553A-A897-4666-9F38-D067996ED4CC</string>
 </dict>
 </plist>

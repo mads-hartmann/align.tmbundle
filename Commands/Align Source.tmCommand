@@ -5,8 +5,7 @@
 	<key>beforeRunningCommand</key>
 	<string>nop</string>
 	<key>command</key>
-	<string>#!/usr/bin/env ruby -W0
-
+	<string>#!/usr/bin/env ruby18
 require 'yaml'
 
 MINIMUM_SPACING_BEFORE = "minimum_spacing_before"
